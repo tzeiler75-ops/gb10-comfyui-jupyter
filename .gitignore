@@ -1,0 +1,8 @@
+*.env
+*.log
+*.pem
+*.key
+__pycache__/
+.venv/
+models/
+venvs/
