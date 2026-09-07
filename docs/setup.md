@@ -47,5 +47,3 @@ COMFY=/workspace/ComfyUI-GB10 \
 PYTHON=/workspace/venvs/comfyui-gb10/bin/python \
 bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 ```
-
-`/workspace` überlebt Recycle/Destroy nur mit entsprechendem Volume. Node- und Modellrevisionen werden protokolliert; sämtliche Abhängigkeiten sind nicht vollständig eingefroren.
