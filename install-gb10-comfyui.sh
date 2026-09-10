@@ -29,6 +29,7 @@ COMFY_REF="${COMFY_REF:-v0.33.2}"
 PYTORCH_INDEX="${PYTORCH_INDEX:-https://download.pytorch.org/whl/cu130}"
 PYTHON_BIN="${PYTHON_BIN:-}"
 INSTALL_MANAGER="${INSTALL_MANAGER:-1}"
+INSTALL_QWENVL="${INSTALL_QWENVL:-0}"
 
 install_os_packages() {
   have apt-get || die 'Dieses Setup erwartet Ubuntu/Debian mit apt-get.'
@@ -111,9 +112,7 @@ create_environment() {
 
   log "ARM64 PyTorch mit CUDA 13.0 installieren: $PYTORCH_INDEX"
   "$py" -m pip install 'torch==2.10.0' 'torchvision==0.25.0' --index-url "$PYTORCH_INDEX"
-  printf 'torch==2.10.0
-torchvision==0.25.0
-' > "$VENV_DIR/gb10-constraints.txt"
+  printf 'torch==2.10.0\ntorchvision==0.25.0\n' > "$VENV_DIR/gb10-constraints.txt"
   export PIP_CONSTRAINT="$VENV_DIR/gb10-constraints.txt"
 
   log 'ComfyUI-Abhängigkeiten installieren'
@@ -133,9 +132,10 @@ torchvision==0.25.0
 configure_models() {
   local kinds=(checkpoints diffusion_models text_encoders clip_vision vae vae_approx
     loras controlnet upscale_models embeddings ipadapter style_models gligen
-    hypernetworks photomaker model_patches latent_upscale_models audio_encoders)
+    hypernetworks photomaker model_patches latent_upscale_models audio_encoders LLM)
   local kind
   for kind in "${kinds[@]}"; do mkdir -p "$MODEL_ROOT/$kind"; done
+  mkdir -p "$COMFY_DIR/models/LLM/Qwen-VL"
 
   if [[ "$MODEL_ROOT" != "$COMFY_DIR/models" ]]; then
     log "Externen Modellpfad konfigurieren: $MODEL_ROOT"
@@ -216,11 +216,24 @@ main() {
   write_environment_file
   validate_torch
 
+  if [[ "$INSTALL_QWENVL" == 1 ]]; then
+    log 'Qwen3-VL-8B-Instruct + QwenVL-Mod herunterladen'
+    COMFY="$COMFY_DIR" PYTHON="$VENV_DIR/bin/python" \
+      bash "$SCRIPT_DIR/qwen-image-2511-material/install_qwenvl_mod_8b.sh"
+  else
+    log 'Qwen3-VL uebersprungen. Nachziehen:'
+    printf '  INSTALL_QWENVL=1 ... bash install-gb10-comfyui.sh\n'
+    printf '  oder: COMFY=%q PYTHON=%q bash %q\n' \
+      "$COMFY_DIR" "$VENV_DIR/bin/python" \
+      "$SCRIPT_DIR/qwen-image-2511-material/install_qwenvl_mod_8b.sh"
+  fi
+
   if [[ -f /etc/portal.yaml ]] && command -v supervisorctl >/dev/null; then
     INSTALL_ROOT="$INSTALL_ROOT" bash "$SCRIPT_DIR/register-vast.sh"
   fi
   log 'Installation erfolgreich.' 
-  printf 'Start:\n  %q\n' "$INSTALL_ROOT/start-comfyui-gb10.sh"
+  printf 'Start:\n  %q start\n' "$INSTALL_ROOT/start-comfyui-gb10.sh"
+  printf 'VL-Befehle:\n  cat %q\n' "$SCRIPT_DIR/qwen-image-2511-material/start_commands.sh"
   printf 'Web UI: http://<HOST-IP>:8188\n'
 }
 
