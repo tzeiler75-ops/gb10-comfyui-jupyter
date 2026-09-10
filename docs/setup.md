@@ -12,14 +12,17 @@ bash qwen-image-2511-material/start_commands.sh
 ```
 
 ```bash
+bash qwen-image-2511-material/install_qwen_nodes.sh
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh check
 bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 ```
 
+`install_qwen_nodes.sh` klont nur `huchukato/ComfyUI-QwenVL-Mod` nach `$COMFY/custom_nodes/ComfyUI-QwenVL` und installiert Node-Requirements unter Torch-Constraint. Keine Weights. Anderes Node-Repo: `QWENVL_NODE_REPO=...`. Anderer Commit: `QWENVL_REF=...`. Qwen Image Edit 2511 braucht keinen Extra-Node (ComfyUI-Core).
+
 Standardziel FP8: `/workspace/ComfyUI/models`; abweichendes Ziel mit `MODEL_ROOT=/pfad/models`. VL-Weights liegen fest unter `$COMFY/models/LLM/Qwen-VL/Qwen3-VL-8B-Instruct`. Unterbrochene Downloads bleiben erhalten; fehlerhafte Dateien werden als `.bad.*` beiseitegelegt.
 
-Der VL-Installer aktiviert auf Vast `/venv/main`. Bei anderer Python-Umgebung `PYTHON=/pfad/venv/bin/python` setzen. `COMFY` überschreibt den ComfyUI-Pfad. Der alte Node wird unter `custom_nodes_backup` gesichert; Paketlisten und Revisionen unter `setup_manifests`. Andere Python-Abhängigkeiten können sich ändern. Anschließend ComfyUI neu starten.
+Die Installer aktivieren auf Vast `/venv/main`. Bei anderer Python-Umgebung `PYTHON=/pfad/venv/bin/python` setzen. `COMFY` überschreibt den ComfyUI-Pfad. Der alte Node wird unter `custom_nodes_backup` gesichert; Paketlisten und Revisionen unter `setup_manifests`. Andere Python-Abhängigkeiten können sich ändern. Anschließend ComfyUI neu starten.
 
 ## Neue GB10-Installation
 
@@ -31,9 +34,13 @@ MODEL_ROOT=/workspace/models bash qwen-image-2511-material/fp8/install_qwen_fp8.
 /workspace/start-comfyui-gb10.sh start
 ```
 
-Ohne `INSTALL_QWENVL=1` nur ComfyUI. VL nachziehen:
+Ohne `INSTALL_QWENVL=1` nur ComfyUI. Nodes/VL nachziehen:
 
 ```bash
+COMFY=/workspace/ComfyUI-GB10 \
+PYTHON=/workspace/venvs/comfyui-gb10/bin/python \
+bash qwen-image-2511-material/install_qwen_nodes.sh
+
 COMFY=/workspace/ComfyUI-GB10 \
 PYTHON=/workspace/venvs/comfyui-gb10/bin/python \
 bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
