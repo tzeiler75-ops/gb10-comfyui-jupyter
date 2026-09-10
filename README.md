@@ -12,6 +12,13 @@ Der Projektbeitrag liegt in der Installation, Integration und Prüfung dieser Ko
 
 ## Start
 
+Befehle anzeigen:
+
+```bash
+cat qwen-image-2511-material/start_commands.sh
+bash qwen-image-2511-material/start_commands.sh
+```
+
 Für ein Vast-Image mit vorhandenem `/workspace/ComfyUI`:
 
 ```bash
@@ -19,12 +26,16 @@ cd /workspace
 git clone https://github.com/tzeiler75-ops/gb10-comfyui-jupyter.git
 cd gb10-comfyui-jupyter
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh
+bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 ```
 
-Optional für Bildanalyse:
+Danach ComfyUI neu starten. Im QwenVL-Node `Qwen3-VL-8B-Instruct` wählen.
+
+GB10-Installer inkl. VL-Download:
 
 ```bash
-bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
+INSTALL_QWENVL=1 INSTALL_ROOT=/workspace MODEL_ROOT=/workspace/models bash install-gb10-comfyui.sh
+/workspace/start-comfyui-gb10.sh start
 ```
 
 [Installation und Betrieb](docs/setup.md)
