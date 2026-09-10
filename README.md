@@ -4,8 +4,9 @@ Technische Grundlage für Bildbearbeitung und Bildanalyse mit ComfyUI auf NVIDIA
 
 ## Umsetzung
 
-- **Qwen Image Edit 2511 FP8:** Modell-Download mit Fortsetzung und SHA-256-Prüfung.
-- **Qwen3-VL-8B-Instruct:** Bildanalyse über QwenVL-Mod, mit Node-Backup und Schutz der installierten Torch-Version.
+- **Qwen Image Edit 2511 FP8:** Modell-Download mit Fortsetzung und SHA-256-Prüfung. Nodes sind ComfyUI-Core.
+- **Qwen3-VL-8B-Instruct:** Bildanalyse über QwenVL-Mod.
+- **Qwen-Node-Installer:** Custom Node ohne Weight-Download.
 - **GB10-Setup:** isolierte Python-Umgebung, Jupyter-Kernel und Dienstverwaltung.
 
 Der Projektbeitrag liegt in der Installation, Integration und Prüfung dieser Komponenten. Modelle und Custom Node stammen aus den verlinkten Open-Source-Projekten.
@@ -25,6 +26,7 @@ Für ein Vast-Image mit vorhandenem `/workspace/ComfyUI`:
 cd /workspace
 git clone https://github.com/tzeiler75-ops/gb10-comfyui-jupyter.git
 cd gb10-comfyui-jupyter
+bash qwen-image-2511-material/install_qwen_nodes.sh
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh
 bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 ```
