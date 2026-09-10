@@ -2,30 +2,41 @@
 
 ## Vorhandenes ComfyUI
 
-Befehle im geklonten Repository ausführen. Das FP8-Paket umfasst Diffusionsmodell, Textencoder, VAE und Lightning-LoRA (ca. 31 GB). Für einen frischen Download 35 GiB frei einplanen.
+Befehle im geklonten Repository ausführen. Das FP8-Paket umfasst Diffusionsmodell, Textencoder, VAE und Lightning-LoRA (ca. 31 GB). Für einen frischen Download 35 GiB frei einplanen. Qwen3-VL-8B-Instruct braucht zusätzlich ~18 GB plus Headroom.
+
+Startblock anzeigen:
+
+```bash
+cat qwen-image-2511-material/start_commands.sh
+bash qwen-image-2511-material/start_commands.sh
+```
 
 ```bash
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh
 bash qwen-image-2511-material/fp8/install_qwen_fp8.sh check
-```
-
-Standardziel: `/workspace/ComfyUI/models`; abweichendes Ziel mit `MODEL_ROOT=/pfad/models`. Unterbrochene Downloads bleiben erhalten; fehlerhafte Dateien werden als `.bad.*` beiseitegelegt.
-
-Für QwenVL-Mod und Qwen3-VL-8B-Instruct:
-
-```bash
 bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 ```
 
-Der Installer aktiviert auf Vast `/venv/main`. Bei anderer Python-Umgebung `PYTHON=/pfad/venv/bin/python` setzen. `COMFY` überschreibt den ComfyUI-Pfad. Der alte Node wird unter `custom_nodes_backup` gesichert; Paketlisten und Revisionen unter `setup_manifests`. Andere Python-Abhängigkeiten können sich ändern. Anschließend ComfyUI neu starten.
+Standardziel FP8: `/workspace/ComfyUI/models`; abweichendes Ziel mit `MODEL_ROOT=/pfad/models`. VL-Weights liegen fest unter `$COMFY/models/LLM/Qwen-VL/Qwen3-VL-8B-Instruct`. Unterbrochene Downloads bleiben erhalten; fehlerhafte Dateien werden als `.bad.*` beiseitegelegt.
+
+Der VL-Installer aktiviert auf Vast `/venv/main`. Bei anderer Python-Umgebung `PYTHON=/pfad/venv/bin/python` setzen. `COMFY` überschreibt den ComfyUI-Pfad. Der alte Node wird unter `custom_nodes_backup` gesichert; Paketlisten und Revisionen unter `setup_manifests`. Andere Python-Abhängigkeiten können sich ändern. Anschließend ComfyUI neu starten.
 
 ## Neue GB10-Installation
 
 Ubuntu/Debian auf ARM64, funktionierendes `nvidia-smi`, Root/sudo und ein bei Vast freigegebener, unbelegter Port sind erforderlich.
 
 ```bash
-INSTALL_ROOT=/workspace MODEL_ROOT=/workspace/models bash install-gb10-comfyui.sh
+INSTALL_QWENVL=1 INSTALL_ROOT=/workspace MODEL_ROOT=/workspace/models bash install-gb10-comfyui.sh
 MODEL_ROOT=/workspace/models bash qwen-image-2511-material/fp8/install_qwen_fp8.sh
+/workspace/start-comfyui-gb10.sh start
+```
+
+Ohne `INSTALL_QWENVL=1` nur ComfyUI. VL nachziehen:
+
+```bash
+COMFY=/workspace/ComfyUI-GB10 \
+PYTHON=/workspace/venvs/comfyui-gb10/bin/python \
+bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
 /workspace/start-comfyui-gb10.sh start
 ```
 
@@ -39,11 +50,3 @@ Ist Container-Port 8188 belegt, beim Installieren `VAST_COMFY_PORT` auf einen an
 ```
 
 Ohne Vast-Portal startet ComfyUI über tmux auf localhost:8188; Zugang per SSH-Tunnel. Auf Vast übernimmt Supervisor den Dienst.
-
-QwenVL-Mod für diesen separaten Checkout:
-
-```bash
-COMFY=/workspace/ComfyUI-GB10 \
-PYTHON=/workspace/venvs/comfyui-gb10/bin/python \
-bash qwen-image-2511-material/install_qwenvl_mod_8b.sh
-```
